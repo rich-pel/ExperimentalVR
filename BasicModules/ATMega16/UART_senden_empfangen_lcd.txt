@@ -1,0 +1,92 @@
+// ** ATMEGA16 C-Language File **
+
+#include <C:/avr/include/avr/io.h>
+#include <C:/avr/include/stdlib.h>
+#include <C:/avr/include/avr/interrupt.h>
+#include <C:/avr/include/util/delay.h>
+#include <C:/avr/include/util/lcd.h>
+
+
+//	Autor: Zhou, Schubert
+//	Firma: FH-Gelsenkirchen
+//	Projektgruppe: E
+//	Datum. 04.06.09
+
+#define BAUD 2400
+#define MYUBRR F_CPU/16/BAUD-1
+#define NoButton 255
+
+
+void USART_Transmit(unsigned char data)
+{
+	while (!(UCSRA & (1<<UDRE)));
+	UDR = data;
+} 
+
+unsigned char USART_Receive(void)
+{
+	while (!(UCSRA & (1<<RXC)));
+	return UDR;
+}
+
+void USART_Init(unsigned int ubrr)
+{
+	UBRRH = (unsigned char)(ubrr>>8);			//baud rate
+	UBRRL = (unsigned char)ubrr;
+
+	UCSRB = (1<<RXEN) | (1<<TXEN) | (1<<RXCIE);	//Receiver/Transmitter aktivieren
+
+	UCSRC = (1<<URSEL) | (1<<USBS) | (3<<UCSZ0);//Formatierung 8 Datenbits 2 Stopp-Bits = 10Bit Datenwortlänge
+}
+
+ISR(USART_RXC_vect)
+{
+	USART_Receive();
+
+	lcd_data(UDR);
+}
+
+void USART_ctrl (char *s)
+{
+	while (*s)
+		{
+			USART_Transmit(*s);
+			s++;
+		}
+}
+
+void main (void)
+{
+		// Init Port A
+	PORTA=0xFF;
+	DDRA=0xFF;
+		// Init Port B
+	PORTB=0x00;
+	DDRB=0x00;
+		// Init Port C
+	PORTC=0x00;
+	DDRC=0x00;
+		// Init Port D
+	PORTD=0xFF;
+	DDRD=0xFF;
+	
+	lcd_init();				// Display Init
+	lcd_clear();			// Anzeige komplett löschen
+
+	USART_Init(MYUBRR);
+	
+	sei();					// globale Interruptfreigabe
+
+	char string[]=("Hello World!!!\n\r");	
+
+	while(1)
+	{
+		if (PINB!=NoButton)
+		{
+			USART_ctrl(string);
+			_delay_ms(100);
+		}
+	}
+}
+
+
