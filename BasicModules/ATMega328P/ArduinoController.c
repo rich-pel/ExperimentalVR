@@ -112,9 +112,7 @@ int main(void)
 		
     }
 	
-	
-	return 0; // wird nie erreicht
+	return 0; 
 }
-
 
 
