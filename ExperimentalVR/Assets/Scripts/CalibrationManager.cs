@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExerimentalManager : MonoBehaviour
+public class CalibrationManager : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -12,6 +12,17 @@ public class ExerimentalManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        
+    }
+
+    private void StartEMGCalibration()
+    {
+        
+    }
+
+
+    private void StartEKGCalibration()
     {
         
     }
