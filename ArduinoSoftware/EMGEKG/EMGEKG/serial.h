@@ -9,7 +9,7 @@
 
 #include "tools.h"
 
-#define TX_BUFFER_SIZE 128	// 255 max!
+#define TX_BUFFER_SIZE 255  // 255 max!
 
 void serialInit(long long CPUFreq, int baudRate);
 void writeString(char* ptr, Bool bNewLine); // must have null terminator!

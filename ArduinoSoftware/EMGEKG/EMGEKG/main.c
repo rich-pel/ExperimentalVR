@@ -45,7 +45,7 @@ int main(void)
     // Update
     while (1) 
     {		
-		_delay_ms(100); // can we get rid of this?
+		_delay_ms(10); // can we get rid of this?
 		
 		sendInputChannel(A0);
 		sendInputChannel(A1);

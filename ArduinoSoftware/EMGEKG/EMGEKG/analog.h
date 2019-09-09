@@ -16,7 +16,7 @@
 
 #include "tools.h"
 
-#define ADC_BUFFER_SIZE 1  // 1-255 max!
+#define ADC_BUFFER_SIZE 255  // 1-255 max!
 #define A0 0
 #define A1 1
 #define A2 2
