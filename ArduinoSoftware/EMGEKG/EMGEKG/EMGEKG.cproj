@@ -147,6 +147,18 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="analog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="analog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tools.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tools.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>

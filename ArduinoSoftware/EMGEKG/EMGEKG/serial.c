@@ -6,11 +6,10 @@
 
 #include "serial.h"
 #include <avr/interrupt.h>
-char TXBuffer[TX_BUFFER_SIZE];	// ring buffer
 
+char TXBuffer[TX_BUFFER_SIZE];	// ring buffer
 uint8_t HeadWrite = 0;
 uint8_t HeadRead = 0;
-
 
 void serialInit(long long CPUFreq, int baudRate)
 {	
@@ -29,7 +28,7 @@ void serialInit(long long CPUFreq, int baudRate)
 	UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);
 	
 	// enable interrupts
-	sei();
+	//sei();
 }
 
 void sendNext()
@@ -65,12 +64,17 @@ void appendByte(char c)
 	}
 }
 
-void writeString(char* ptr)
+void writeString(char* ptr, Bool bNewLine)
 {
 	// assert null terminator!
 	for (uint8_t i = 0; ptr[i] != 0; ++i)
 	{
 		appendByte(ptr[i]);
+	}
+	
+	if (bNewLine)
+	{
+		appendByte('\n');
 	}
 	
 	sendNextIfEmpty();

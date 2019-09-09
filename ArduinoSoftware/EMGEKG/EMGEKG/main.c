@@ -6,39 +6,53 @@
  */ 
 
 // Clock Speed
-#define F_CPU 16000000UL // 16 Hz
+#define F_CPU 16000000UL // 16 MHz
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "serial.h"
+#include "analog.h"
+
+
+void sendInputChannel(uint8_t channel)
+{
+	static char strBuffer[16];
+	
+	uint16_t lastADC = getInputValue(channel);
+	if (lastADC == ADC_ERROR)
+	{
+		writeString("ERROR", TRUE);
+	}
+	else
+	{
+		strBuffer[0] = 'A';
+		strBuffer[1] = channel + '0';
+		strBuffer[2] = ':';
+		strBuffer[3] = ' ';
+		intToStr(lastADC, &strBuffer[4]);
+		writeString(strBuffer, TRUE);
+	}
+}
 
 int main(void)
 {
-	// start / setup
-	
-	
-	// set bit 5 of the data direction of port b to 1
-	// indicates that we want to use port b as output
-	DDRB |= 0B00100000;
-	// Alternative:
-	// einmal festlegen, welche ports sind eingang/ausgang
-	// 0 für Eingang, 1 für ausgang bsp: 0x00 nur eingänge; 0xFF nur ausgaenge
-	// fünfter und sechster als ausgang: DDRB = 0b01100000;
-	
+	// Init
 	serialInit(F_CPU, 9600);
+	analogInit();
+	sei(); // don't forget to set the internal interrupts ON!
 	
     // Update
     while (1) 
-    {
-		// set Port B5 to high
-		PORTB |= 0B00100000;
-		_delay_ms(100);
-		PORTB &= 0B11011111;
-		_delay_ms(100);
+    {		
+		_delay_ms(100); // can we get rid of this?
 		
-		//writeString("Test");
-		writeInt32(42);
-		writeInt8(0xff);
+		sendInputChannel(A0);
+		sendInputChannel(A1);
+		//sendInputChannel(A2);
+		//sendInputChannel(A3);
+		//sendInputChannel(A4);
+		//sendInputChannel(A5);
     }
 }
 
