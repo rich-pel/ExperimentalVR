@@ -43,15 +43,15 @@ void uart_outputchar(char ch)
 
 
 // interrupt function
-ISR(PCINT2_vect)
-{
-	// if button was pressed, turn on or off ... not useful for us
-	if((PIND & (1 << PIND4)) == 0)
-	{
-		PORTD ^= (1<<LED1);
-		_delay_ms(250);
-	}
-}
+//void ISR(PCINT2_vect)
+//{
+	//// if button was pressed, turn on or off ... not useful for us
+	//if((PIND & (1 << PIND4)) == 0)
+	//{
+		//PORTD ^= (1<<LED1);
+		//_delay_ms(250);
+	//}
+//}
 
 
 
