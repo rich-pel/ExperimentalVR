@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ArduinoCommunicator")]
+[assembly: AssemblyTitle("ArduinoConnect")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ArduinoCommunicator")]
+[assembly: AssemblyProduct("ArduinoConnect")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4a189637-85a6-446d-9c52-e0aa2f0216b0")]
+[assembly: Guid("0be51f21-5687-4679-b6d1-36969ee2a056")]
 
 // Version information for an assembly consists of the following four values:
 //

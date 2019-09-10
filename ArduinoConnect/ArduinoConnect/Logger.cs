@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace ArduinoArmGrabber
+namespace ArduinoConnect
 {
     public enum ELogType
     {
@@ -12,7 +8,10 @@ namespace ArduinoArmGrabber
         Warning,
         Error
     }
-    
+
+    /*
+     * This Logger is Thread safe!
+     */
     public static class Logger
     {
         struct Message

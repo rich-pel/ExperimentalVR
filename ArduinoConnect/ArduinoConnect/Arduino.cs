@@ -2,11 +2,10 @@
 using System.IO.Ports;
 using System.Management;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace ArduinoArmGrabber
+namespace ArduinoConnect
 {
-    public static class ArmGrabber
+    public static class Arduino
     {
         public static bool IsRunning { get; private set; }
         public static float LeftArm { get; private set; }
@@ -77,7 +76,7 @@ namespace ArduinoArmGrabber
             {
                 Device.Open();
             }
-            catch (Exception e)
+            catch
             {
                 Logger.Log("Opening Arduino Device (COM Port) failed!", ELogType.Warning);
                 Device = null;
@@ -149,6 +148,7 @@ namespace ArduinoArmGrabber
                             Device.Read(buffer, 1, 1);
                             if (buffer[1] == 0xff)
                             {
+                                // two successive 0xff bytes mark the start of a package
                                 bStartFound = true;
                                 break;
                             }
@@ -211,14 +211,14 @@ namespace ArduinoArmGrabber
                     {
                         SerialPort serialPort = new SerialPort();
                         serialPort.PortName = deviceId;
-                        serialPort.BaudRate = 9600; //The baud rate is the amount of possible events that can happen in a second.
+                        serialPort.BaudRate = 9600; // bits per second
                         serialPort.Handshake = Handshake.None;
                         serialPort.Parity = Parity.None;
                         return serialPort;
                     }
                 }
             }
-            catch (ManagementException e)
+            catch
             {
                 /* Do Nothing */
             }
