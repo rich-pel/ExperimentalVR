@@ -13,7 +13,7 @@
 
 void serialInit(long long CPUFreq, int baudRate);
 void writeString(char* ptr, Bool bNewLine); // must have null terminator!
-void writeInt8(int8_t number);
-void writeInt32(int32_t number);
+void writeUInt8(uint8_t number);
+void writeUInt16(uint16_t number);
 
 #endif /* SERIAL_H_ */

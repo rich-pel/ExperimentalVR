@@ -80,18 +80,16 @@ void writeString(char* ptr, Bool bNewLine)
 	sendNextIfEmpty();
 }
 
-void writeInt8(int8_t number)
+void writeUInt8(uint8_t number)
 {
 	appendByte(number);
 	sendNextIfEmpty();
 }
 
-void writeInt32(int32_t number)
+void writeUInt16(uint16_t number)
 {
 	appendByte(number);
 	appendByte(number >> 8);
-	appendByte(number >> 16);
-	appendByte(number >> 24);
 	sendNextIfEmpty();
 }
 

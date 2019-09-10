@@ -17,7 +17,7 @@
 
 void sendInputChannel(uint8_t channel)
 {
-	static char strBuffer[16];
+	//static char strBuffer[16];
 	
 	uint16_t lastADC = getInputValue(channel);
 	if (lastADC == ADC_ERROR)
@@ -26,12 +26,20 @@ void sendInputChannel(uint8_t channel)
 	}
 	else
 	{
-		strBuffer[0] = 'A';
-		strBuffer[1] = channel + '0';
-		strBuffer[2] = ':';
-		strBuffer[3] = ' ';
-		intToStr(lastADC, &strBuffer[4]);
-		writeString(strBuffer, TRUE);
+		// write as string
+		//strBuffer[0] = 'A';
+		//strBuffer[1] = channel + '0';
+		//strBuffer[2] = ':';
+		//strBuffer[3] = ' ';
+		//intToStr(lastADC, &strBuffer[4]);
+		//writeString(strBuffer, TRUE);
+		
+		// write values
+		writeUInt16(0xFFFF); // header
+		
+		// 1111 0000 0000 0000		channel number (max 15)
+		// 0000 0011 1111 1111		channel value  (max 1023)
+		writeUInt16(lastADC + (channel << 12));	// 4 last bits determine the channel number
 	}
 }
 
