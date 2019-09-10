@@ -14,11 +14,24 @@ namespace ArduinoConnect
         public static float Arm { get; private set; }
         public static float Heart { get; private set; }
 
-        const int PACKAGE_SIZE = 3;
+        // A Package consits of 4 bytes:
+        // header (2 bytes): 0xff, 0xff
+        // value  (2 bytes): first 6 bits -> channel A0 - A5, remaining 10 bits: channel value from 0 - 1023
+
+        const byte PACKAGE_SIZE = 4; // the whole package, header + value
+        const byte VALUE_SIZE = 2;   // just the value size of the package
         const float MAX_SENSOR_VALUE = 1023.0f;
-        const byte PACKAGE_ARM = 0;
-        const byte PACKAGE_HEART = 1;
         const int DEVICE_REFRESH_TIMER = 2000; // milliseconds
+
+        // only one channel per package
+        const ushort A0 = 0b1000000000000000;
+        const ushort A1 = 0b0100000000000000;
+        const ushort A2 = 0b0010000000000000;
+        const ushort A3 = 0b0001000000000000;
+        const ushort A4 = 0b0000100000000000;
+        const ushort A5 = 0b0000010000000000;
+        const ushort CHANNEL_MASK = 0b1111110000000000;
+        const ushort VALUE_MASK   = 0b0000001111111111;
 
         static SerialPort ConnectedDevice;
         static Thread Loop = new Thread(Update);
@@ -145,25 +158,14 @@ namespace ArduinoConnect
                 }
 
                 int bytesToRead = ConnectedDevice.BytesToRead;
-
-                /*if (bytesToRead >= 20)
+                if (bytesToRead < PACKAGE_SIZE)
                 {
-                    byte[] test = new byte[20];
-                    device.Read(test, 0, 20);
-
-                    for (int i = 0; i < 20; ++i)
-                    {
-                        Console.Write(test[i] + (test[i] < 10 ? "   " : (test[i] < 100 ?  "  " : " ")));
-                        if (i % 10 == 0)
-                        {
-                            Console.WriteLine();
-                        }
-                    }
-                }*/
+                    continue;
+                }
 
                 // Start flag consits of two consecutive bytes of value 0xff
                 // we discard all prior bytes before the start flag
-                if (!bStartFound && bytesToRead > 2)
+                if (!bStartFound)
                 {
                     for (int i = 0; i < bytesToRead; ++i)
                     {
@@ -182,9 +184,9 @@ namespace ArduinoConnect
                         }
                     }
                 }
-                else if (bStartFound && bytesToRead >= PACKAGE_SIZE)
+                else
                 {
-                    ConnectedDevice.Read(buffer, 0, PACKAGE_SIZE);
+                    ConnectedDevice.Read(buffer, 0, VALUE_SIZE);
                     HandleReceivedPackage(buffer);
                     bStartFound = false;
                 }
@@ -195,22 +197,27 @@ namespace ArduinoConnect
 
         static void HandleReceivedPackage(byte[] package)
         {
-            ushort discrete = BitConverter.ToUInt16(package, 1);
+            // determine channel
+            ushort pkgValue = BitConverter.ToUInt16(package, 0);
+
+            ushort channel = (ushort)(pkgValue & CHANNEL_MASK);
+            ushort chValue = (ushort)(pkgValue & VALUE_MASK);
+
             //Console.WriteLine("Discrete value: " + discrete);
 
-            float value = discrete / MAX_SENSOR_VALUE;
+            float normalized = chValue / MAX_SENSOR_VALUE;
             lock (myLock)
             {
-                switch (package[0])
+                switch (channel)
                 {
-                    case PACKAGE_ARM:
-                        Arm = value;
+                    case A0: // Arm value
+                        Arm = chValue;
                         break;
-                    case PACKAGE_HEART:
-                        Heart = value;
+                    case A1: // Heart value
+                        Heart = chValue;
                         break;
                     default:
-                        Logger.Log("Unknown Package Flag: " + package[0], ELogType.Error);
+                        Logger.Log("Unknown Channel: " + channel, ELogType.Error);
                         break;
                 }
             }
