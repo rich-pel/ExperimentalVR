@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO.Ports;
 using System.Management;
 using System.Threading;
@@ -7,117 +9,142 @@ namespace ArduinoConnect
 {
     public static class Arduino
     {
-        public static bool IsRunning { get; private set; }
-        public static float LeftArm { get; private set; }
-        public static float RightArm { get; private set; }
+        public static bool IsRunning { get { return Loop.IsAlive; } }
+        public static bool IsConnected { get { return ConnectedDevice != null && ConnectedDevice.IsOpen; } }
+        public static float Arm { get; private set; }
+        public static float Heart { get; private set; }
 
         const int PACKAGE_SIZE = 3;
         const float MAX_SENSOR_VALUE = 1023.0f;
-        const byte PACKAGE_ARM_LEFT = 0;
-        const byte PACKAGE_ARM_RIGHT = 1;
-        const int INIT_ATTEMPT_SLEEP = 2000; // milliseconds
+        const byte PACKAGE_ARM = 0;
+        const byte PACKAGE_HEART = 1;
+        const int DEVICE_REFRESH_TIMER = 2000; // milliseconds
 
-        // TODO: Try device path "\\.\COM5"
-        static string[] ArduinoDeviceHints = { "Arduino", "USB" };
-
-        static SerialPort Device;
+        static SerialPort ConnectedDevice;
         static Thread Loop = new Thread(Update);
         static bool bStop;
 
         static object myLock = new object();
 
+        //static List<COMDevice> Devices = new List<COMDevice>() { new COMDevice { ID = "FAKE", Description = "test" } };
+        public static string[] AvailableDevices { get; private set; } = new string[0];
+        public static int DeviceIndex { get; private set; }
 
-        public static void Start()
+
+        public static void Startup()
         {
-            if (Loop.IsAlive)
-            {
-                Logger.Log("Could not Start ArmGrabber since it's already running!", ELogType.Warning);
-                return;
-            }
+            if (Loop.IsAlive) return;
 
-            // no lock needed here since loop thread is not started anyway
             bStop = false;
             Loop.Start();
-            IsRunning = true;
         }
 
-        public static void Stop()
+        public static void Shutdown()
         {
-            if (bStop)
+            if (IsConnected)
             {
-                Logger.Log("ArmGrabber is currently stopping", ELogType.Warning);
-                return;
+                Disconnect();
             }
-
-            if (!Loop.IsAlive)
-            {
-                Logger.Log("ArmGrabber is already stopped!", ELogType.Warning);
-                return;
-            }
-
-            Logger.Log("Stopping ArmGrabber...", ELogType.Log);
             lock (myLock)
             {
                 bStop = true;
             }
         }
 
-        static bool TryFindDevice()
+        public static void Connect(int Index)
         {
-            Logger.Log("Looking for Devices...", ELogType.Log);
-            Device = AutodetectArduinoDevice();
-            if (Device == null)
+            if (!Loop.IsAlive)
             {
-                Logger.Log("No Arduino Device found!", ELogType.Warning);
-                return false;
+                Logger.Log("Call Startup() first!", ELogType.Warning);
+                return;
             }
 
-            try
+            if (IsConnected)
             {
-                Device.Open();
-            }
-            catch
-            {
-                Logger.Log("Opening Arduino Device (COM Port) failed!", ELogType.Warning);
-                Device = null;
-                return false;
+                Logger.Log("Could not Connect since we're already connected!", ELogType.Warning);
+                return;
             }
 
-            if (!Device.IsOpen)
+            lock (myLock)
             {
-                Logger.Log("Could not open device: " + Device.PortName, ELogType.Warning);
-                Device = null;
-                return false;
+                if (Index < 0 || Index >= AvailableDevices.Length)
+                {
+                    Logger.Log("Given Device Index '" + Index + "' is out of bounds (" + AvailableDevices.Length + ")!", ELogType.Warning);
+                    return;
+                }
+
+                try
+                {
+                    ConnectedDevice = new SerialPort();
+                    ConnectedDevice.PortName = AvailableDevices[Index];
+                    ConnectedDevice.BaudRate = 9600; // bits per second
+                    ConnectedDevice.Handshake = Handshake.None;
+                    ConnectedDevice.Parity = Parity.None;
+                    ConnectedDevice.Open();
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message, ELogType.Error);
+                    ConnectedDevice?.Close();
+                    ConnectedDevice = null;
+                }
             }
 
-            return true;
+            // just info for outer user
+            DeviceIndex = Index;
+            Logger.Log("Connected to: " + AvailableDevices[Index], ELogType.Log);
+        }
+
+        public static void Disconnect()
+        {
+            if (!Loop.IsAlive)
+            {
+                Logger.Log("Call Startup() first!", ELogType.Warning);
+                return;
+            }
+
+            if (!IsConnected)
+            {
+                Logger.Log("Not connected!", ELogType.Warning);
+                ConnectedDevice = null; //just to be sure
+                return;
+            }
+
+            lock (myLock)
+            {
+                ConnectedDevice.Close();
+                ConnectedDevice = null;
+            }
+
+            Logger.Log("Disconnected from "+ AvailableDevices[DeviceIndex], ELogType.Log);
         }
 
         static void Update()
         {
-            while (!TryFindDevice())
-            {
-                if (bStop)
-                {
-                    Logger.Log("STOPPED", ELogType.Log);
-                    return;
-                }
-
-                Thread.Sleep(INIT_ATTEMPT_SLEEP);
-            }
-
-            if (Device == null || !Device.IsOpen)
-            {
-                Logger.Log("Device is not open! This should never happen!", ELogType.Error);
-                return;
-            }
-
             bool bStartFound = false;
             byte[] buffer = new byte[PACKAGE_SIZE];
 
             while (!bStop)
             {
-                int bytesToRead = Device.BytesToRead;
+                while (!IsConnected)
+                {
+                    if (bStop)
+                    {
+                        Logger.Log("STOPPED", ELogType.Log);
+                        return;
+                    }
+
+                    AvailableDevices = SerialPort.GetPortNames();
+                    Thread.Sleep(DEVICE_REFRESH_TIMER);
+                }
+
+                if (ConnectedDevice == null || !ConnectedDevice.IsOpen)
+                {
+                    Logger.Log("Device is not open! This should never happen!", ELogType.Error);
+                    continue;
+                }
+
+                int bytesToRead = ConnectedDevice.BytesToRead;
 
                 /*if (bytesToRead >= 20)
                 {
@@ -140,12 +167,12 @@ namespace ArduinoConnect
                 {
                     for (int i = 0; i < bytesToRead; ++i)
                     {
-                        Device.Read(buffer, 0, 1);
+                        ConnectedDevice.Read(buffer, 0, 1);
                         //Console.WriteLine("Looking for Start Flag["+i+"]: " + buffer[0]);
 
                         if (buffer[0] == 0xff)
                         {
-                            Device.Read(buffer, 1, 1);
+                            ConnectedDevice.Read(buffer, 1, 1);
                             if (buffer[1] == 0xff)
                             {
                                 // two successive 0xff bytes mark the start of a package
@@ -157,17 +184,12 @@ namespace ArduinoConnect
                 }
                 else if (bStartFound && bytesToRead >= PACKAGE_SIZE)
                 {
-                    Device.Read(buffer, 0, PACKAGE_SIZE);
+                    ConnectedDevice.Read(buffer, 0, PACKAGE_SIZE);
                     HandleReceivedPackage(buffer);
                     bStartFound = false;
                 }
             }
 
-            Device.Close();
-            lock (myLock)
-            {
-                IsRunning = false;
-            }
             Logger.Log("STOPPED", ELogType.Log);
         }
 
@@ -181,57 +203,17 @@ namespace ArduinoConnect
             {
                 switch (package[0])
                 {
-                    case PACKAGE_ARM_LEFT:
-                        LeftArm = value;
+                    case PACKAGE_ARM:
+                        Arm = value;
                         break;
-                    case PACKAGE_ARM_RIGHT:
-                        RightArm = value;
+                    case PACKAGE_HEART:
+                        Heart = value;
                         break;
                     default:
-                        Logger.Log("Unknown Arm Flag: " + package[0], ELogType.Error);
+                        Logger.Log("Unknown Package Flag: " + package[0], ELogType.Error);
                         break;
                 }
             }
-        }
-
-        static SerialPort AutodetectArduinoDevice()
-        {
-            ManagementScope connectionScope = new ManagementScope();
-            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
-            try
-            {
-                foreach (ManagementObject item in searcher.Get())
-                {
-                    string desc = item["Description"].ToString();
-                    string deviceId = item["DeviceID"].ToString();
-                    Logger.Log("Found Device: " + desc, ELogType.Log);
-
-                    if (StringContains(desc, ArduinoDeviceHints))
-                    {
-                        SerialPort serialPort = new SerialPort();
-                        serialPort.PortName = deviceId;
-                        serialPort.BaudRate = 9600; // bits per second
-                        serialPort.Handshake = Handshake.None;
-                        serialPort.Parity = Parity.None;
-                        return serialPort;
-                    }
-                }
-            }
-            catch
-            {
-                /* Do Nothing */
-            }
-            return null;
-        }
-
-        static bool StringContains(string source, string[] lookingFor)
-        {
-            foreach (string str in lookingFor)
-            {
-                if (source.Contains(str)) return true;
-            }
-            return false;
         }
     }
 }
