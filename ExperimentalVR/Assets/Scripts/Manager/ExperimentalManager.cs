@@ -44,7 +44,17 @@ public class ExperimentalManager : MonoBehaviour
 
     private void AddVPMomentDataPoint()
     {
-        _globalVPMetaData.AddMomentData(new VPMomentData());
+        try
+        {
+            _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation));
+//            ConditionManager.instance.GetParticipant();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+//        _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ));
 //        _globalVPData.Add(new VPMomentData());
     }
 

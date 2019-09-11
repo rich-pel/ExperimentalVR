@@ -37,12 +37,23 @@ public class MainMenuManager : MonoBehaviour
 //         GUI.enabled = optional;
 //         testButton = GUI.Button(new Rect(50, 100, 50, 30), "Start Calibration");
 
-        if (GUI.Button(new Rect(80, 130, 50, 30), "Start Calibration"))
+
+        GUI.Box(new Rect(10, 10, 140, 140), "Loader Menu");
+//        GUILayout.Box("Loader Menu");
+        if (GUI.Button(new Rect(20, 30, 120, 30), new GUIContent("Calibration", "Start the Calibration")))
             LoadCalibrationScene();
-        if (GUI.Button(new Rect(110, 170, 50, 30), "Start Experiment"))
+//        GUI.Label (new Rect (150,30,140,20), GUI.tooltip);
+
+
+        if (GUI.Button(new Rect(20, 60, 120, 30), new GUIContent("Experiment", "Start the Experiment")))
             LoadExperimentalScene();
-        if (GUI.Button(new Rect(140, 200, 50, 30), "Start Evaluation"))
+//        GUI.Label (new Rect (150,60,140,20), GUI.tooltip);
+
+        if (GUI.Button(new Rect(20, 90, 120, 30), new GUIContent("Evaluation", "Start the Evaluation")))
             LoadEvaluationScene();
+
+//GUILayout.Label(GUI.tooltip);        
+        GUI.Label(new Rect(20, 120, 140, 20), GUI.tooltip);
 
 //        GUI.enabled = true;
     }
@@ -59,6 +70,7 @@ public class MainMenuManager : MonoBehaviour
         Debug.Log("Clicked the button with Calibration");
         SceneManager.LoadScene("CalibrationScene", LoadSceneMode.Additive);
     }
+
     private void LoadEvaluationScene()
     {
         Debug.Log("Clicked the button with Evaluation");
