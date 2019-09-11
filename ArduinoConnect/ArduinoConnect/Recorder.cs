@@ -12,7 +12,7 @@ namespace ArduinoConnect
         {
             public byte Channel;
             public ushort Value;
-            public long Millisecond;
+            public uint Millisecond;
         }
 
         public enum ERecordingState
@@ -104,7 +104,7 @@ namespace ArduinoConnect
                     RecPoint p = WriteBuffer.Dequeue();
                     Stream.WriteByte(p.Channel);
                     Stream.Write(BitConverter.GetBytes(p.Value), 0, sizeof(ushort));
-                    Stream.Write(BitConverter.GetBytes(p.Millisecond), 0, sizeof(long));
+                    Stream.Write(BitConverter.GetBytes(p.Millisecond), 0, sizeof(uint));
                 }
             }
 
@@ -132,7 +132,7 @@ namespace ArduinoConnect
                 {
                     Channel = (byte)channel,
                     Value = value,
-                    Millisecond = Watch.ElapsedMilliseconds
+                    Millisecond = (uint)Watch.ElapsedMilliseconds
                 });
             }
         }
