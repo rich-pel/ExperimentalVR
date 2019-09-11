@@ -39,6 +39,8 @@ public class ArduinoWindow : EditorWindow
                     break;
             }
         }
+
+        Repaint();
     }
 
     void OnGUI()
@@ -67,6 +69,9 @@ public class ArduinoWindow : EditorWindow
                 Arduino.Connect(SelectedCOMPort);
             }
         }
+
+        EditorGUILayout.LabelField("Channel A0: " + Arduino.ChannelValues[0]);
+        EditorGUILayout.LabelField("Channel A1: " + Arduino.ChannelValues[1]);
 
         EditorGUILayout.EndVertical();
     }
