@@ -26,9 +26,6 @@ void serialInit(long long CPUFreq, int baudRate)
 	
 	// set character size to 8 bits!
 	UCSR0C = (1 << UCSZ00) | (1 << UCSZ01);
-	
-	// enable interrupts
-	//sei();
 }
 
 void sendNext()

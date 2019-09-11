@@ -34,8 +34,8 @@ void sendInputChannel(uint8_t channel)
 		//intToStr(lastADC, &strBuffer[4]);
 		//writeString(strBuffer, TRUE);
 		
-		// write values
-		writeUInt16(0xFFFF); // header
+		// header
+		writeUInt16(0xFFFF);
 		
 		// 1111 0000 0000 0000		channel number (max 15)
 		// 0000 0011 1111 1111		channel value  (max 1023)
@@ -55,6 +55,8 @@ int main(void)
     {		
 		_delay_ms(10); // can we get rid of this?
 		
+		// don't forget to set ADC_INPUT_MAX in analog.h
+		// accordingly before trying to send other channels!
 		sendInputChannel(A0);
 		sendInputChannel(A1);
 		//sendInputChannel(A2);
