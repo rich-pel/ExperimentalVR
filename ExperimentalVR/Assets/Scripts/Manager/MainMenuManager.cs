@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[ExecuteInEditMode]
 public class MainMenuManager : MonoBehaviour
 {
 //    public bool optional;
@@ -12,6 +14,8 @@ public class MainMenuManager : MonoBehaviour
     #region Singelton
 
     public static MainMenuManager instance;
+
+    private bool _experimentalCondition = false;
 
     void Awake()
     {
@@ -52,8 +56,10 @@ public class MainMenuManager : MonoBehaviour
         if (GUI.Button(new Rect(20, 90, 120, 30), new GUIContent("Evaluation", "Start the Evaluation")))
             LoadEvaluationScene();
 
+
 //GUILayout.Label(GUI.tooltip);        
-        GUI.Label(new Rect(20, 120, 140, 20), GUI.tooltip);
+        GUI.Label(new Rect(20, 180, 140, 20), GUI.tooltip);
+
 
 //        GUI.enabled = true;
     }
@@ -74,5 +80,11 @@ public class MainMenuManager : MonoBehaviour
     private void LoadEvaluationScene()
     {
         Debug.Log("Clicked the button with Evaluation");
+    }
+
+
+    public void SetToExperimentalCondition()
+    {
+        _experimentalCondition = true;
     }
 }

@@ -27,6 +27,7 @@ public class ExperimentalManager : MonoBehaviour
     
     private bool measurementStarted;
     private VPMetaData _globalVPMetaData;
+    [SerializeField] private Vector2 _conditionGuiPosistion;
 
     // Start is called before the first frame update
     void Start()
@@ -60,7 +61,14 @@ public class ExperimentalManager : MonoBehaviour
 
     private void StartExperiment()
     {
+        string vpNumber = "";
         _globalVPMetaData = new VPMetaData();
+        _globalVPMetaData.StartExperimentWithVpMetaData(vpNumber, DateTime.Now);
         measurementStarted = true;
+    }
+
+    public Vector2 GetConditionGuiPosition()
+    {
+        return _conditionGuiPosistion;
     }
 }
