@@ -5,6 +5,7 @@ using ArduinoConnect;
 public class ArduinoWindow : EditorWindow
 {
     static int SelectedCOMPort = 0;
+    static string RecordingFilePath;
 
     [MenuItem("Experiment/Arduino Window")]
     public static void Init()
@@ -72,6 +73,42 @@ public class ArduinoWindow : EditorWindow
 
         EditorGUILayout.LabelField("Channel A0: " + Arduino.ChannelValues[0]);
         EditorGUILayout.LabelField("Channel A1: " + Arduino.ChannelValues[1]);
+
+        Recorder.ERecordingState state = Recorder.RecordingState;
+        GUI.enabled = state == Recorder.ERecordingState.Stopped;
+        if (GUILayout.Button("Choose Recording File Path..."))
+        {
+            RecordingFilePath = EditorUtility.SaveFilePanel("Recording File Path...", Application.dataPath, "Recording.ekg", "ekg");
+        }
+        GUI.enabled = true;
+        EditorGUILayout.LabelField("Record EKG to: " + RecordingFilePath);
+
+        switch (Recorder.RecordingState)
+        {
+            case Recorder.ERecordingState.Stopped:
+                GUI.enabled = !string.IsNullOrEmpty(RecordingFilePath);
+                if (GUILayout.Button("Start Recording"))
+                {
+                    Recorder.StartRecording(RecordingFilePath);
+                }
+                GUI.enabled = true;
+                break;
+            case Recorder.ERecordingState.Recording:
+                if (GUILayout.Button("Stop Recording"))
+                {
+                    Recorder.StopRecording();
+                }
+                break;
+            case Recorder.ERecordingState.Stopping:
+                GUI.enabled = false;
+                GUILayout.Button("Stopping...");
+                GUI.enabled = true;
+                break;
+            default:
+                // This should never happen
+                Debug.LogError("Unknown Recording State: " + state);
+                break;
+        }
 
         EditorGUILayout.EndVertical();
     }

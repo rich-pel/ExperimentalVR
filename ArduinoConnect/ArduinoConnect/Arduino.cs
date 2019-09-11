@@ -211,6 +211,8 @@ namespace ArduinoConnect
             {
                 ChannelValues[channel] = normalized;
             }
+
+            Recorder.OnPackageReceived(channel, chValue);
         }
     }
 }
