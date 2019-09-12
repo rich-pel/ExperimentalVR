@@ -21,10 +21,11 @@ public class Movement : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         yaxes = (float) Random.Range(-5f, 5f);
+        //An dieser stelle sollte dann die Spannung vom EMG eingespeist werden
+        //yaxes = getComponent<Voltage>;
         xpos = spawnPos.x;
         ypos = yaxes + spawnPos.y;
         if (i <= 1000)
