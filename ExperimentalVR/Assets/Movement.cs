@@ -13,7 +13,8 @@ public class Movement : MonoBehaviour
     private float ypos;
     private float i;
     private Vector3 spawnPos;
-     
+    
+
     void Start(){
         spawnPos = Punkt.transform.position;
    
@@ -34,10 +35,10 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            i = 0;}
-       
-            cubePosition = new Vector3((xpos + (i/100)), ypos, spawnPos.z);
-            Punkt.transform.position = cubePosition;
-       //Debug.Log("something");
+            i = 0;
+        }
+        
+        cubePosition = new Vector3((xpos + (i/100)), ypos, spawnPos.z);
+        Punkt.transform.position = cubePosition;
      }
 }
