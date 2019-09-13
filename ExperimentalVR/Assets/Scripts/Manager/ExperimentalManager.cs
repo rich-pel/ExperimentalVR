@@ -28,6 +28,7 @@ public class ExperimentalManager : MonoBehaviour
     private bool measurementStarted;
     private VPMetaData _globalVPMetaData;
     [SerializeField] private Vector2 _conditionGuiPosistion;
+    [SerializeField] private string _storingPath = @"D:\TestVrExperiment";
 
     // Start is called before the first frame update
     void Start()
@@ -70,5 +71,15 @@ public class ExperimentalManager : MonoBehaviour
     public Vector2 GetConditionGuiPosition()
     {
         return _conditionGuiPosistion;
+    }
+
+    public void SaveMeasurementData()
+    {
+        DataIOManager.instance.SaveMeasurementData(_globalVPMetaData);
+    }
+
+    public string GetStorePath()
+    {
+        return _storingPath;
     }
 }

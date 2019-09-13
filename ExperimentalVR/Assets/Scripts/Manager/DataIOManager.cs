@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public class DataIOManager : MonoBehaviour
@@ -27,9 +28,19 @@ public class DataIOManager : MonoBehaviour
     {
     }
 
+
+
     public string GetDefaultPrefix()
     {
         return DateTime.Now.Year + "" + DateTime.Now.Month + "" + DateTime.Now.Day + "_" +
                DateTime.Now.Hour + "" + DateTime.Now.Minute + "" + DateTime.Now.Second;
+    }
+
+    public void SaveMeasurementData(VPMetaData vpMetaData)
+    {
+        //Shitty workaround 
+        List<VPMetaData> vpMetaDatas = new List<VPMetaData>();
+        vpMetaDatas.Add(vpMetaData);
+        CSVSerializer.GenerateAndSaveCSV(vpMetaDatas, ExperimentalManager.instance.GetStorePath(), "DeineMamaAufToast");
     }
 }

@@ -24,6 +24,7 @@ public class ConditionManager : MonoBehaviour
     private string _vpNumber;
     private float _buttonWidth = 140;
     private float _buttonHeight = 25;
+    private bool _measurementStarted = false;
 
 
     // Start is called before the first frame update
@@ -50,11 +51,17 @@ public class ConditionManager : MonoBehaviour
         GUI.Label(new Rect(10, 40, 80, 30), new GUIContent("VP#: ", "Insert the VP Number"));
         _vpNumber = GUI.TextField(new Rect(50, 40, 80, 20), _vpNumber);
 
-        if (GUI.Button(new Rect(0, 60, _buttonWidth, _buttonHeight),
-            new GUIContent("Start Measurement", "Start the measurement of the Experiment")))
+        if (!_measurementStarted && GUI.Button(new Rect(0, 60, _buttonWidth, _buttonHeight),
+                new GUIContent("Start Measurement", "Start the measurement of the Experiment")))
         {
-            
+            _measurementStarted = true;
             //TODO: Implement the Start the Experimental Condition + check for VP-Number Condition    
+        }
+
+        if (_measurementStarted && GUI.Button(new Rect(0, 60, _buttonWidth, _buttonHeight),
+                new GUIContent("Save", "Save the generated data from the measurement")))
+        {
+            ExperimentalManager.instance.SaveMeasurementData();
         }
 
         GUI.Label(new Rect(10, 80, 80, 80), GUI.tooltip);
