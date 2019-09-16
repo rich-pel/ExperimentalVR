@@ -55,7 +55,7 @@ public class Example : MonoBehaviour
             var x1 = myQueuex.Dequeue();
             var a1 = myQueuea.Dequeue();
             var y1 = myQueuey.Dequeue();
-            texture.SetPixel(x1,y1,a1);
+//            texture.SetPixel(x1,y1,a1);
         }
         //poplast element of queue
         //texture.Apply();
