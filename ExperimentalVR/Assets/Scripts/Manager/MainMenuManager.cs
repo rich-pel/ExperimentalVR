@@ -65,19 +65,19 @@ public class MainMenuManager : MonoBehaviour
     }
 
 
-    private void LoadExperimentalScene()
+    public void LoadExperimentalScene()
     {
         Debug.Log("Clicked the button with Experiment");
         SceneManager.LoadScene("ExperimentScene", LoadSceneMode.Single);
     }
 
-    private void LoadCalibrationScene()
+    public void LoadCalibrationScene()
     {
         Debug.Log("Clicked the button with Calibration");
         SceneManager.LoadScene("CalibrationScene", LoadSceneMode.Additive);
     }
 
-    private void LoadEvaluationScene()
+    public void LoadEvaluationScene()
     {
         Debug.Log("Clicked the button with Evaluation");
     }
