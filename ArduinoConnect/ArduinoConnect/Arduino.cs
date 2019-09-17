@@ -11,7 +11,6 @@ namespace ArduinoConnect
     {
         const byte PACKAGE_SIZE = 4; // the whole package, header + value
         const byte VALUE_SIZE = 2;   // just the value size of the package
-        const float MAX_SENSOR_VALUE = 1023.0f;
         const int DEVICE_REFRESH_TIMER = 2000; // milliseconds
 
         // A Package consits of 4 bytes:
@@ -26,9 +25,19 @@ namespace ArduinoConnect
         const int NUM_CHANNELS = 6; // Arduino has 6 Analog channels, A0 - A5
 
 
+        struct ChannelBuffer
+        {
+            public ushort[] Buffer;
+            public int HeadRead;
+            public int HeadWrite;
+        }
+
+
         public static bool IsRunning { get { return Loop.IsAlive; } }
         public static bool IsConnected { get { return ConnectedDevice != null && ConnectedDevice.IsOpen; } }
-        public static float[] ChannelValues { get; private set; } = new float[NUM_CHANNELS];
+        //public static float[] ChannelValues { get; private set; } = new float[NUM_CHANNELS];
+        static ChannelBuffer[] ChannelBuffers;
+        static int ChannelBuffersSize;
 
         static SerialPort ConnectedDevice;
         static Thread Loop = new Thread(Update);
@@ -41,10 +50,12 @@ namespace ArduinoConnect
         public static int DeviceIndex { get; private set; }
 
 
-        public static void Startup()
+        public static void Startup(int bufferSize)
         {
             if (Loop.IsAlive) return;
 
+            ChannelBuffersSize = bufferSize;
+            ResetChannelBuffers();
             bStop = false;
             Loop.Start();
         }
@@ -83,7 +94,7 @@ namespace ArduinoConnect
                     return;
                 }
 
-                ResetChannelValues();
+                ResetChannelBuffers();
 
                 try
                 {
@@ -128,15 +139,44 @@ namespace ArduinoConnect
                 ConnectedDevice = null;
             }
 
-            ResetChannelValues();
+            ResetChannelBuffers();
             Logger.Log("Disconnected from "+ AvailableDevices[DeviceIndex], ELogType.Log);
         }
 
-        static void ResetChannelValues()
+        public static bool GetNextValue(int channel, out ushort value)
         {
+            value = 0;
+            if (channel < 0 || channel >= NUM_CHANNELS)
+            {
+                Logger.Log("Channel Index " + channel + " out of range(" + ChannelBuffers.Length + ")!", ELogType.Warning);
+                return false;
+            }
+
+            lock (myLock)
+            {
+                ref ChannelBuffer b = ref ChannelBuffers[channel];
+                if (b.HeadRead != b.HeadWrite)
+                {
+                    value = b.Buffer[b.HeadRead++];
+                    if (b.HeadRead >= ChannelBuffersSize)
+                    {
+                        b.HeadRead = 0;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static void ResetChannelBuffers()
+        {
+            ChannelBuffers = new ChannelBuffer[NUM_CHANNELS];
             for (int i = 0; i < NUM_CHANNELS; ++i)
             {
-                ChannelValues[i] = 0;
+                ChannelBuffers[i] = new ChannelBuffer
+                {
+                    Buffer = new ushort[ChannelBuffersSize]
+                };
             }
         }
 
@@ -198,21 +238,26 @@ namespace ArduinoConnect
 
             // see package description at the top
             ushort channel = (ushort)((pkgValue & CHANNEL_MASK) >> 12);
-            ushort chValue = (ushort)(pkgValue & VALUE_MASK);
+            ushort value = (ushort)(pkgValue & VALUE_MASK);
 
-            if (channel >= 6)
+            if (channel >= NUM_CHANNELS)
             {
-                Logger.Log("Received not supported channel: " + channel + "  with value (not normalized): " + chValue, ELogType.Error);
+                Logger.Log("Received not supported channel: " + channel + "  with value: " + value, ELogType.Error);
                 return;
             }
 
-            float normalized = chValue / MAX_SENSOR_VALUE;
             lock (myLock)
             {
-                ChannelValues[channel] = normalized;
+                ref ChannelBuffer b = ref ChannelBuffers[channel];
+                b.Buffer[b.HeadWrite++] = value;
+
+                if (b.HeadWrite >= ChannelBuffersSize)
+                {
+                    b.HeadWrite = 0;
+                }
             }
 
-            Recorder.OnPackageReceived(channel, chValue);
+            Recorder.OnPackageReceived(channel, value);
         }
     }
 }
