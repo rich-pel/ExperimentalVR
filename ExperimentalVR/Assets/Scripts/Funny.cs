@@ -9,18 +9,20 @@ public class Funny : MonoBehaviour
     public float Lerp = 1f;
     public float Multiplier = 1f;
 
+    ushort LastHeartValue = 0;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        ArduinoTranslator.OnNextHeartValue += (ushort value) => { LastHeartValue = value; };
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 pos = transform.position;
-        pos.y = Arduino.ChannelValues[0] * Multiplier;
+        pos.y = LastHeartValue * Multiplier;
         transform.position = Offset + Vector3.Lerp(transform.position, pos, Time.deltaTime * Lerp);
     }
 }
