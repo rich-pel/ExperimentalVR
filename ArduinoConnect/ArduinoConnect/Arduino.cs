@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
-using System.Management;
 using System.Threading;
 
 namespace ArduinoConnect
@@ -34,7 +34,7 @@ namespace ArduinoConnect
 
 
         public static bool IsRunning { get { return Loop.IsAlive; } }
-        public static bool IsConnected { get { return ConnectedDevice != null && ConnectedDevice.IsOpen; } }
+        public static bool IsConnected { get { return (ConnectedDevice != null && ConnectedDevice.IsOpen) || (Loop.IsAlive && bEmulation); } }
         //public static float[] ChannelValues { get; private set; } = new float[NUM_CHANNELS];
         static ChannelBuffer[] ChannelBuffers;
         static int ChannelBuffersSize;
@@ -42,6 +42,11 @@ namespace ArduinoConnect
         static SerialPort ConnectedDevice;
         static Thread Loop = new Thread(Update);
         static bool bStop;
+
+        static bool bEmulation;
+        static BinaryReader EmulationReader;
+        static Stopwatch EmulationWatch;
+        static Recorder.RecPoint NextRecPoint;
 
         static object myLock = new object();
 
@@ -56,6 +61,7 @@ namespace ArduinoConnect
 
             ChannelBuffersSize = bufferSize;
             ResetChannelBuffers();
+            bEmulation = false;
             bStop = false;
             Loop.Start();
         }
@@ -69,7 +75,51 @@ namespace ArduinoConnect
             lock (myLock)
             {
                 bStop = true;
+                EmulationWatch?.Stop();
+                EmulationReader?.Close();
             }
+        }
+
+        public static void Connect(string recFile)
+        {
+            if (!Loop.IsAlive)
+            {
+                Logger.Log("Call Startup() first!", ELogType.Warning);
+                return;
+            }
+
+            if (IsConnected)
+            {
+                Logger.Log("Could not Connect since we're already connected!", ELogType.Warning);
+                return;
+            }
+
+            if (!File.Exists(recFile))
+            {
+                Logger.Log("Recording '" + recFile + "' does not exist!", ELogType.Warning);
+                return;
+            }
+
+            lock (myLock)
+            {
+                try
+                {
+                    EmulationReader = new BinaryReader(new FileStream(recFile, FileMode.Open, FileAccess.Read, FileShare.Read));
+                } catch (Exception e)
+                {
+                    EmulationReader.Close();
+                    EmulationReader = null;
+                    Logger.Log(e.Message, ELogType.Error);
+                    return;
+                }
+
+                EmulationWatch = new Stopwatch();
+                EmulationWatch.Start();
+                NextRecPoint = new Recorder.RecPoint();
+                bEmulation = true;
+            }
+
+            Logger.Log("Emulation started with: " + recFile, ELogType.Log);
         }
 
         public static void Connect(int Index)
@@ -135,8 +185,15 @@ namespace ArduinoConnect
 
             lock (myLock)
             {
-                ConnectedDevice.Close();
+                ConnectedDevice?.Close();
                 ConnectedDevice = null;
+
+                if (bEmulation)
+                {
+                    bEmulation = false;
+                    Logger.Log("Emulation stopped!", ELogType.Log);
+                    return;
+                }
             }
 
             ResetChannelBuffers();
@@ -200,6 +257,46 @@ namespace ArduinoConnect
                     Thread.Sleep(DEVICE_REFRESH_TIMER);
                 }
 
+                if (bEmulation)
+                {
+                    if (EmulationReader == null)
+                    {
+                        Logger.Log("Update Thread started in emulation mode with EmulationReader not being initialized!", ELogType.Error);
+                        return;
+                    }
+
+                    if (EmulationWatch == null)
+                    {
+                        Logger.Log("Update Thread started in emulation mode with EmulationWatch not being initialized!", ELogType.Error);
+                        return;
+                    }
+
+                    while (EmulationWatch.ElapsedMilliseconds >= NextRecPoint.Millisecond)
+                    {
+                        if (EmulationReader.BaseStream.Position >= EmulationReader.BaseStream.Length)
+                        {
+                            Logger.Log("Reached end of recording file. Stopping emulation...", ELogType.Log);
+                            Disconnect();
+                            return;
+                        }
+
+                        lock (myLock)
+                        {
+                            NextRecPoint = new Recorder.RecPoint
+                            {
+                                Channel = EmulationReader.ReadByte(),
+                                Value = EmulationReader.ReadUInt16(),
+                                Millisecond = EmulationReader.ReadUInt32()
+                            };
+                        }
+
+                        //Logger.Log("Push value from rec: " + NextRecPoint.Value, ELogType.Log);
+                        PushValue(NextRecPoint.Channel, NextRecPoint.Value);
+                    }
+
+                    continue;
+                }
+
                 if (ConnectedDevice == null || !ConnectedDevice.IsOpen)
                 {
                     Logger.Log("Device is not open! This should never happen!", ELogType.Error);
@@ -231,6 +328,20 @@ namespace ArduinoConnect
             Logger.Log("STOPPED", ELogType.Log);
         }
 
+        static void PushValue(byte channel, ushort value)
+        {
+            lock (myLock)
+            {
+                ref ChannelBuffer b = ref ChannelBuffers[channel];
+                b.Buffer[b.HeadWrite++] = value;
+
+                if (b.HeadWrite >= ChannelBuffersSize)
+                {
+                    b.HeadWrite = 0;
+                }
+            }
+        }
+
         static void HandleReceivedPackage(byte[] package)
         {
             // determine channel
@@ -246,17 +357,7 @@ namespace ArduinoConnect
                 return;
             }
 
-            lock (myLock)
-            {
-                ref ChannelBuffer b = ref ChannelBuffers[channel];
-                b.Buffer[b.HeadWrite++] = value;
-
-                if (b.HeadWrite >= ChannelBuffersSize)
-                {
-                    b.HeadWrite = 0;
-                }
-            }
-
+            PushValue((byte)channel, value);
             Recorder.OnPackageReceived(channel, value);
         }
     }
