@@ -6,7 +6,8 @@ public class ArduinoWindow : EditorWindow
 {
     const int MENU_WIDTH = 400;
 
-    static int SelectedCOMPort = 0;
+    static int SelectedCOMPort;
+    static bool bEmulation;
     static string RecordingFilePath;
 
     static ushort LastHeartValue;
@@ -41,8 +42,15 @@ public class ArduinoWindow : EditorWindow
         EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(MENU_WIDTH));
         EditorGUILayout.LabelField("COM Port (Arduino):");
 
-        GUI.enabled = !Arduino.IsConnected;
+        GUI.enabled = !Arduino.IsConnected && !bEmulation;
         SelectedCOMPort = EditorGUILayout.Popup(SelectedCOMPort, Arduino.AvailableDevices);
+        GUI.enabled = true;
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(MENU_WIDTH));
+        EditorGUILayout.LabelField("Emulation:");
+        GUI.enabled = !Arduino.IsConnected;
+        bEmulation = EditorGUILayout.Toggle(bEmulation);
         GUI.enabled = true;
         EditorGUILayout.EndHorizontal();
 
@@ -51,6 +59,10 @@ public class ArduinoWindow : EditorWindow
             if (Arduino.IsConnected)
             {
                 Arduino.Disconnect();
+            }
+            else if (bEmulation)
+            {
+                Arduino.Connect(EditorUtility.OpenFilePanel("Choose recording", Application.dataPath, "rec"));
             }
             else
             {
@@ -73,23 +85,23 @@ public class ArduinoWindow : EditorWindow
         EditorGUILayout.LabelField("Arm: " + LastArmValue, GUILayout.MaxWidth(MENU_WIDTH));
 
         Recorder.ERecordingState state = Recorder.RecordingState;
-        GUI.enabled = state == Recorder.ERecordingState.Stopped;
+        GUI.enabled = state == Recorder.ERecordingState.Stopped && !bEmulation;
         if (GUILayout.Button("Choose Recording File Path...", GUILayout.MaxWidth(MENU_WIDTH)))
         {
-            RecordingFilePath = EditorUtility.SaveFilePanel("Recording File Path...", Application.dataPath, "Recording.ekg", "ekg");
+            RecordingFilePath = EditorUtility.SaveFilePanel("Recording File Path...", Application.dataPath, "Recording.rec", "rec");
         }
-        GUI.enabled = true;
+        GUI.enabled = !bEmulation;
         EditorGUILayout.LabelField("Record EKG to: " + RecordingFilePath, GUILayout.MaxWidth(MENU_WIDTH));
 
         switch (Recorder.RecordingState)
         {
             case Recorder.ERecordingState.Stopped:
-                GUI.enabled = !string.IsNullOrEmpty(RecordingFilePath);
+                GUI.enabled = !string.IsNullOrEmpty(RecordingFilePath) && !bEmulation;
                 if (GUILayout.Button("Start Recording", GUILayout.MaxWidth(MENU_WIDTH)))
                 {
                     Recorder.StartRecording(RecordingFilePath);
                 }
-                GUI.enabled = true;
+                GUI.enabled = !bEmulation;
                 break;
             case Recorder.ERecordingState.Recording:
                 if (GUILayout.Button("Stop Recording", GUILayout.MaxWidth(MENU_WIDTH)))
@@ -100,7 +112,7 @@ public class ArduinoWindow : EditorWindow
             case Recorder.ERecordingState.Stopping:
                 GUI.enabled = false;
                 GUILayout.Button("Stopping...", GUILayout.MaxWidth(MENU_WIDTH));
-                GUI.enabled = true;
+                GUI.enabled = !bEmulation;
                 break;
             default:
                 // This should never happen

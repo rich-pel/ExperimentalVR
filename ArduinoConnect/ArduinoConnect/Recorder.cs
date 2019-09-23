@@ -8,7 +8,7 @@ namespace ArduinoConnect
 {
     public static class Recorder
     {
-        struct RecPoint
+        internal struct RecPoint
         {
             public byte Channel;
             public ushort Value;
