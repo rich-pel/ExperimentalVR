@@ -72,4 +72,15 @@ public class ConditionManager : MonoBehaviour
     {
         return _vpNumber;
     }
+
+    public void SetVpNumber(String vpNumber)
+    {
+        _vpNumber = vpNumber;
+    }
+
+
+    public void StoreMeasuremenData()
+    {
+        ExperimentalManager.instance.SaveMeasurementData();
+    }
 }
