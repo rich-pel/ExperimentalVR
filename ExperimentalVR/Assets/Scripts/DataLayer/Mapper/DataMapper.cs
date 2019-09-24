@@ -6,12 +6,15 @@ namespace DataLayer.Mapper
     public class DataMapper
     {
         private readonly VpMetaDataMapper vpMetaDataMapper;
-        private readonly VpMomentDataMapper vpMomentDataMapper;
+        private readonly ArduinoArmDataMapper armDataMapper ;
+        private readonly ArduinoHeartDataMapper heartDataMapper;
+        
 
         public DataMapper()
         {
             vpMetaDataMapper = new VpMetaDataMapper();
-            vpMomentDataMapper = new VpMomentDataMapper();
+            armDataMapper = new ArduinoArmDataMapper();
+            heartDataMapper = new ArduinoHeartDataMapper();
         }
 
         public List<string[]> MapMetaDataToStringList(VPMetaData vpMetaData)
@@ -20,9 +23,15 @@ namespace DataLayer.Mapper
         }
 
 
-        public List<string[]> MapMomentDataToStringList(VPMomentData vpMomentData)
+        public List<string[]> MapArduinoArmDataToStringList(VPMetaData vpMetaData)
         {
-            return vpMomentDataMapper.MapMomentDataToStringList(vpMomentData);
+            return armDataMapper.MapArmDataToStringList(vpMetaData);
+        }
+
+        public List<string[]> MapArduinoHeartDataToStringList(VPMetaData vpMetaData)
+        {
+            return heartDataMapper.MapHearDataToStringList(vpMetaData);
+
         }
     }
 }

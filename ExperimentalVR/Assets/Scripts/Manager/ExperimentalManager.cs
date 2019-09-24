@@ -34,6 +34,18 @@ public class ExperimentalManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ArduinoTranslator.OnNextArmValue += OnNextArmValue;
+        ArduinoTranslator.OnNextHeartValue += OnNextHeartValue;
+    }
+
+    private void OnNextHeartValue(ushort electrodeValue)
+    {
+        _globalVPMetaData?.AddHeartValue(Time.time, electrodeValue);
+    }
+
+    private void OnNextArmValue(ushort electrodeValue)
+    {
+        _globalVPMetaData?.AddArmValue(Time.time, electrodeValue);
     }
 
     // Update is called once per frame
@@ -51,15 +63,12 @@ public class ExperimentalManager : MonoBehaviour
         {
             //TODO: find a suitableway for the VPEventType
             _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation, VPEventType.Nothing));
-//            ConditionManager.instance.GetParticipant();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
-//        _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ));
-//        _globalVPData.Add(new VPMomentData());
     }
 
     private void StartExperiment()

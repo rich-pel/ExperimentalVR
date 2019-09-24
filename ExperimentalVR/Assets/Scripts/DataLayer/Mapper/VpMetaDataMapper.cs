@@ -5,14 +5,9 @@ using UnityEngine;
 
 namespace DataLayer.Mapper
 {
-    public class VpMetaDataMapper
+    public class VpMetaDataMapper : BaseDataMapper
     {
         private readonly Dictionary<string, int> _positionValueMap;
-
-        //MetaData
-        private const string VpNumber = "VpNumber";
-        private const string StartTime = "StartTime";
-        private const string EndTime = "EndTime";
 
         //MomentData
         private const string TimeStamp = "TimeStamp";
@@ -30,9 +25,9 @@ namespace DataLayer.Mapper
             _positionValueMap = new Dictionary<string, int>
             {
                 //MetaData
-                {VpNumber, 0},
-                {StartTime, 1},
-                {EndTime, 2},
+                {vpNumber, 0},
+                {startTime, 1},
+                {endTime, 2},
 
                 //MomentData
                 {TimeStamp, 3},
@@ -59,9 +54,9 @@ namespace DataLayer.Mapper
             string[] header = new string[_positionValueMap.Count];
 
             //MetaData
-            header[_positionValueMap[VpNumber]] = VpNumber;
-            header[_positionValueMap[StartTime]] = StartTime;
-            header[_positionValueMap[EndTime]] = EndTime;
+            header[_positionValueMap[vpNumber]] = vpNumber;
+            header[_positionValueMap[startTime]] = startTime;
+            header[_positionValueMap[endTime]] = endTime;
 
             //MomentData
             header[_positionValueMap[TimeStamp]] = TimeStamp;
@@ -82,9 +77,9 @@ namespace DataLayer.Mapper
             {
                 var singleLine = new string[_positionValueMap.Count];
                 //MetaData
-                singleLine[_positionValueMap[VpNumber]] = vpMetaData.GetVpNumber();
-                singleLine[_positionValueMap[StartTime]] = vpMetaData.GetStartTime().ToString();
-                singleLine[_positionValueMap[EndTime]] = vpMetaData.GetEndTime().ToString();
+                singleLine[_positionValueMap[vpNumber]] = vpMetaData.GetVpNumber();
+                singleLine[_positionValueMap[startTime]] = vpMetaData.GetStartTime().ToString();
+                singleLine[_positionValueMap[endTime]] = vpMetaData.GetEndTime().ToString();
 
                 //MomentData
                 singleLine[_positionValueMap[TimeStamp]] = momentData.TimeStamp.ToString();
@@ -106,9 +101,9 @@ namespace DataLayer.Mapper
             string[] firstDataLine = csvFile[1];
             vPMetaData =
                 new VPMetaData(
-                    firstDataLine[_positionValueMap[VpNumber]],
-                    Convert.ToDateTime(firstDataLine[_positionValueMap[StartTime]]),
-                    Convert.ToDateTime(firstDataLine[_positionValueMap[EndTime]])
+                    firstDataLine[_positionValueMap[vpNumber]],
+                    Convert.ToDateTime(firstDataLine[_positionValueMap[startTime]]),
+                    Convert.ToDateTime(firstDataLine[_positionValueMap[endTime]])
                 );
             //Skiped the first line, because this is the header!
             for (int i = 1; i < csvFile.Count; i++)

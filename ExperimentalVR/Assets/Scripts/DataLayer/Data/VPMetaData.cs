@@ -10,16 +10,20 @@ namespace DefaultNamespace
 
     public class VPMetaData
     {
-        private List<VPMomentData> _vpMomentData;
-
         private String vpNumber;
         private DateTime startTime;
         private DateTime endTime;
 
+        private List<VPMomentData> vpMomentData;
+        private List<ArduinoData> heartData;
+        private List<ArduinoData> armData;
+
 
         public VPMetaData()
         {
-            _vpMomentData = new List<VPMomentData>();
+            vpMomentData = new List<VPMomentData>();
+            heartData = new List<ArduinoData>();
+            armData = new List<ArduinoData>();
         }
 
         public VPMetaData(string vpNumber, DateTime startTime, DateTime endTime)
@@ -33,7 +37,6 @@ namespace DefaultNamespace
         {
             this.vpNumber = vpNumber;
             this.startTime = startTime;
-//            System.DateTime;
         }
 
         public void EndExperimentWithVpMetaData(DateTime endTime)
@@ -43,12 +46,12 @@ namespace DefaultNamespace
 
         public void AddMomentData(VPMomentData vpMomentDate)
         {
-            _vpMomentData.Add(vpMomentDate);
+            vpMomentData.Add(vpMomentDate);
         }
 
         public List<VPMomentData> GetMomentData()
         {
-            return _vpMomentData;
+            return vpMomentData;
         }
 
         public string GetVpNumber()
@@ -64,6 +67,36 @@ namespace DefaultNamespace
         public DateTime GetEndTime()
         {
             return endTime;
+        }
+
+        public void AddHeartValue(float time, ushort electrodeValue)
+        {
+            AddHeartValue(new ArduinoData(time, electrodeValue));
+        }
+
+        public void AddHeartValue(ArduinoData data)
+        {
+            heartData.Add(data);
+        }
+
+        public void AddArmValue(ArduinoData data)
+        {
+            armData.Add(data);
+        }
+
+        public void AddArmValue(float time, ushort electrodeValue)
+        {
+            AddArmValue(new ArduinoData(time, electrodeValue));
+        }
+
+        public List<ArduinoData> GetHeartData()
+        {
+            return heartData;
+        }
+
+        public List<ArduinoData> GetArmData()
+        {
+            return armData;
         }
     }
 }

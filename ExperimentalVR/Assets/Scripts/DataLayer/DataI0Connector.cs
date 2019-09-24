@@ -19,10 +19,12 @@ namespace DataLayer
         {
             csvDeSerializer.WriteCSVFile(dataMapper.MapMetaDataToStringList(vpMetaData), storePath, fileName);
         }
-
-        public void GenerateAndSaveVpMomentDataAsCsv(VPMomentData vpMomentData, string storePath, string fileName)
+        
+        public void GenerateAndSaveArduinoDataAsCsv(VPMetaData vpMetaData, string storePath, string fileName)
         {
-            csvDeSerializer.WriteCSVFile(dataMapper.MapMomentDataToStringList(vpMomentData), storePath, fileName);
+            csvDeSerializer.WriteCSVFile(dataMapper.MapArduinoArmDataToStringList(vpMetaData), storePath, fileName);
+            csvDeSerializer.WriteCSVFile(dataMapper.MapArduinoHeartDataToStringList(vpMetaData), storePath, fileName);
         }
+
     }
 }

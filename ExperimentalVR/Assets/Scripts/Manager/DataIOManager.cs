@@ -11,6 +11,9 @@ public class DataIOManager : MonoBehaviour
 
     public static DataIOManager instance;
     private DataI0Connector dataI0Connector;
+    
+    //TODO: Set FileNames
+    private const string ArudinoFileName = "DeineMamaAufFleischWurst";
     private const string FileName = "DeineMamaAufToast";
 
     private void Awake()
@@ -48,5 +51,6 @@ public class DataIOManager : MonoBehaviour
 //        CSVSerializer.GenerateAndSaveCSV(vpMetaDatas, ExperimentalManager.instance.GetStorePath(), "DeineMamaAufToast");
         dataI0Connector.GenerateAndSaveMetaDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(),
             FileName);
+        dataI0Connector.GenerateAndSaveArduinoDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(), ArudinoFileName);
     }
 }
