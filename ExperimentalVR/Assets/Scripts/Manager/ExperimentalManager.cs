@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -48,7 +49,8 @@ public class ExperimentalManager : MonoBehaviour
     {
         try
         {
-            _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation));
+            //TODO: find a suitableway for the VPEventType
+            _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation, VPEventType.Nothing));
 //            ConditionManager.instance.GetParticipant();
         }
         catch (Exception e)

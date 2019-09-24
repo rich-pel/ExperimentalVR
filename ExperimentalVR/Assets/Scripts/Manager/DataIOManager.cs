@@ -10,7 +10,7 @@ public class DataIOManager : MonoBehaviour
     #region Singelton
 
     public static DataIOManager instance;
-    private DataIOConnector dataIoConnector;
+    private DataI0Connector dataI0Connector;
     private const string FileName = "DeineMamaAufToast";
 
     private void Awake()
@@ -24,7 +24,7 @@ public class DataIOManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        dataIoConnector = new DataIOConnector();
+        dataI0Connector = new DataI0Connector();
     }
 
     // Update is called once per frame
@@ -46,7 +46,7 @@ public class DataIOManager : MonoBehaviour
         List<VPMetaData> vpMetaDatas = new List<VPMetaData>();
         vpMetaDatas.Add(vpMetaData);
 //        CSVSerializer.GenerateAndSaveCSV(vpMetaDatas, ExperimentalManager.instance.GetStorePath(), "DeineMamaAufToast");
-        dataIoConnector.GenerateAndSaveMetaDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(),
+        dataI0Connector.GenerateAndSaveMetaDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(),
             FileName);
     }
 }

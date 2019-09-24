@@ -4,25 +4,20 @@ using DefaultNamespace;
 
 namespace DataLayer
 {
-    public class DataIOConnector
+    public class DataI0Connector
     {
         private DataMapper dataMapper;
         private CsvDeSerializer csvDeSerializer;
 
-        public DataIOConnector( )
+        public DataI0Connector( )
         {
             dataMapper = new DataMapper();
-csvDeSerializer = new CsvDeSerializer();
+            csvDeSerializer = new CsvDeSerializer();
         }
 
         public void GenerateAndSaveMetaDataAsCsv(VPMetaData vpMetaData, string storePath, string fileName)
         {
             csvDeSerializer.WriteCSVFile(dataMapper.MapMetaDataToStringList(vpMetaData), storePath, fileName);
-        }
-
-        public void GenerateAndSaveEventDataAsCsv(EventData eventData, string storePath, string fileName)
-        {
-            csvDeSerializer.WriteCSVFile(dataMapper.MapEventDataToStringList(eventData), storePath, fileName);
         }
 
         public void GenerateAndSaveVpMomentDataAsCsv(VPMomentData vpMomentData, string storePath, string fileName)

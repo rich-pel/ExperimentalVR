@@ -7,43 +7,63 @@ namespace DefaultNamespace
     //VPNumber
     //Start Time
     //End Time
-    
+
     public class VPMetaData
     {
         private List<VPMomentData> _vpMomentData;
-        private List<EventData> _eventData;
 
-        private String _vpNumber;
-        private DateTime _startTime;
-        private DateTime _endTime;
+        private String vpNumber;
+        private DateTime startTime;
+        private DateTime endTime;
 
 
         public VPMetaData()
         {
             _vpMomentData = new List<VPMomentData>();
-            _eventData = new List<EventData>();
+        }
+
+        public VPMetaData(string vpNumber, DateTime startTime, DateTime endTime)
+        {
+            this.vpNumber = vpNumber;
+            this.startTime = startTime;
+            this.endTime = endTime;
         }
 
         public void StartExperimentWithVpMetaData(String vpNumber, DateTime startTime)
         {
-            _vpNumber = vpNumber;
-            _startTime = startTime;
+            this.vpNumber = vpNumber;
+            this.startTime = startTime;
 //            System.DateTime;
         }
 
         public void EndExperimentWithVpMetaData(DateTime endTime)
         {
-            _endTime = endTime;
+            this.endTime = endTime;
         }
-        
+
         public void AddMomentData(VPMomentData vpMomentDate)
         {
             _vpMomentData.Add(vpMomentDate);
         }
 
-        public void AddEventData(EventData eventData)
+        public List<VPMomentData> GetMomentData()
         {
-            _eventData.Add(eventData);
+            return _vpMomentData;
+        }
+
+        public string GetVpNumber()
+        {
+            return vpNumber;
+        }
+
+        public DateTime GetStartTime()
+        {
+            return startTime;
+        }
+
+        public DateTime GetEndTime()
+        {
+            return endTime;
         }
     }
 }

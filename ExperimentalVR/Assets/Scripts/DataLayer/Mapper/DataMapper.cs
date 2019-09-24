@@ -6,13 +6,11 @@ namespace DataLayer.Mapper
     public class DataMapper
     {
         private readonly VpMetaDataMapper vpMetaDataMapper;
-        private readonly EventDataMapper eventDataMapper;
         private readonly VpMomentDataMapper vpMomentDataMapper;
 
         public DataMapper()
         {
             vpMetaDataMapper = new VpMetaDataMapper();
-            eventDataMapper = new EventDataMapper();
             vpMomentDataMapper = new VpMomentDataMapper();
         }
 
@@ -21,10 +19,6 @@ namespace DataLayer.Mapper
             return vpMetaDataMapper.MapMetaDataToStringList(vpMetaData);
         }
 
-        public List<string[]> MapEventDataToStringList(EventData eventData)
-        {
-            return eventDataMapper.MapEventDataToStringList(eventData);
-        }
 
         public List<string[]> MapMomentDataToStringList(VPMomentData vpMomentData)
         {

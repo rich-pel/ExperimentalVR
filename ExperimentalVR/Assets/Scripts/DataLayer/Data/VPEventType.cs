@@ -2,5 +2,6 @@
     {
         Gavel,
         Bottle,
-        Brush
+        Brush,
+        Nothing
     }
