@@ -169,13 +169,12 @@ public class Plotter : MonoBehaviour
     void Update()
     {
         int lag = GetReadLag();
-        //int lastX = 0;
         ushort nextValue = 0;
 
         if (lag == 0) return;
 
-        Stopwatch w = new Stopwatch();
-        w.Start();
+        //Stopwatch w = new Stopwatch();
+        //w.Start();
 
         int pixelLag = lag * Zoom;
         for (int i = 0; i < Pixels.Length; ++i)
@@ -209,7 +208,7 @@ public class Plotter : MonoBehaviour
         Plot.SetPixels(Pixels);
         Plot.Apply();
 
-        w.Stop();
-        UnityEngine.Debug.Log(w.ElapsedTicks);
+        //w.Stop();
+        //UnityEngine.Debug.Log(w.ElapsedTicks);
     }
 }

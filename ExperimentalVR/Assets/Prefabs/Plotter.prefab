@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -431.2, y: 215.8}
-  m_SizeDelta: {x: 300, y: 150}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &741459669960181154
 CanvasRenderer:
@@ -87,8 +87,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5256185cbe6a95f4aa7a6dbcc96858e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Zoom: 2
-  LineThickness: 1
+  Zoom: 1
+  LineThickness: 2
   PlotColor: {r: 1, g: 1, b: 1, a: 1}
   BackgroundColor: {r: 0, g: 0, b: 0, a: 0.5882353}
   PlotSource: 0
