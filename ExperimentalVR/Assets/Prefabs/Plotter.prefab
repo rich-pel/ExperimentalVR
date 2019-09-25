@@ -33,11 +33,11 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -431.2, y: 215.8}
-  m_SizeDelta: {x: -936.5, y: -493.7}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 300, y: 150}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &741459669960181154
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -87,5 +87,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5256185cbe6a95f4aa7a6dbcc96858e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlotColor: {r: 1, g: 0, b: 0, a: 0}
-  BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  Zoom: 2
+  LineThickness: 1
+  PlotColor: {r: 1, g: 1, b: 1, a: 1}
+  BackgroundColor: {r: 0, g: 0, b: 0, a: 0.5882353}
+  PlotSource: 0
