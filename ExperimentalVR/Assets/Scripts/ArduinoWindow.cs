@@ -81,8 +81,9 @@ public class ArduinoWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.LabelField("Heart: " + LastHeartValue, GUILayout.MaxWidth(MENU_WIDTH));
-        EditorGUILayout.LabelField("Heart BPM: " + HeartBPMDetector.BeatsPerMinute, GUILayout.MaxWidth(MENU_WIDTH));
         EditorGUILayout.LabelField("Arm: " + LastArmValue, GUILayout.MaxWidth(MENU_WIDTH));
+        EditorGUILayout.LabelField("Heart BPM: " + HeartBPMDetector.BeatsPerMinute, GUILayout.MaxWidth(MENU_WIDTH));
+        HeartBPMDetector.PercentDiff = EditorGUILayout.FloatField(HeartBPMDetector.PercentDiff, GUILayout.MaxWidth(MENU_WIDTH));
 
         Recorder.ERecordingState state = Recorder.RecordingState;
         GUI.enabled = state == Recorder.ERecordingState.Stopped && !bEmulation;
