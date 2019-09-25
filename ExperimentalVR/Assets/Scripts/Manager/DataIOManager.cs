@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DataLayer;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -9,6 +10,11 @@ public class DataIOManager : MonoBehaviour
     #region Singelton
 
     public static DataIOManager instance;
+    private DataI0Connector dataI0Connector;
+    
+    //TODO: Set FileNames
+    private const string ArudinoFileName = "DeineMamaAufFleischWurst";
+    private const string FileName = "DeineMamaAufToast";
 
     private void Awake()
     {
@@ -21,6 +27,7 @@ public class DataIOManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dataI0Connector = new DataI0Connector();
     }
 
     // Update is called once per frame
@@ -41,6 +48,9 @@ public class DataIOManager : MonoBehaviour
         //Shitty workaround 
         List<VPMetaData> vpMetaDatas = new List<VPMetaData>();
         vpMetaDatas.Add(vpMetaData);
-        CSVSerializer.GenerateAndSaveCSV(vpMetaDatas, ExperimentalManager.instance.GetStorePath(), "DeineMamaAufToast");
+//        CSVSerializer.GenerateAndSaveCSV(vpMetaDatas, ExperimentalManager.instance.GetStorePath(), "DeineMamaAufToast");
+        dataI0Connector.GenerateAndSaveMetaDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(),
+            FileName);
+        dataI0Connector.GenerateAndSaveArduinoDataAsCsv(vpMetaData, ExperimentalManager.instance.GetStorePath(), ArudinoFileName);
     }
 }
