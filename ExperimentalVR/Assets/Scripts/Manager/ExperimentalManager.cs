@@ -31,6 +31,8 @@ public class ExperimentalManager : MonoBehaviour
     [SerializeField] private Vector2 _conditionGuiPosistion;
     [SerializeField] private string _storingPath = @"D:\TestVrExperiment";
 
+    private VPEventType currentEvent = VPEventType.Nothing;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,7 +64,7 @@ public class ExperimentalManager : MonoBehaviour
         try
         {
             //TODO: find a suitableway for the VPEventType
-            _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation, VPEventType.Nothing));
+            _globalVPMetaData.AddMomentData(new VPMomentData(Time.time, ConditionManager.instance.GetParticipantCamera().position, ConditionManager.instance.GetParticipantCamera().rotation, currentEvent));
         }
         catch (Exception e)
         {
@@ -92,5 +94,20 @@ public class ExperimentalManager : MonoBehaviour
     public string GetStorePath()
     {
         return _storingPath;
+    }
+
+    private void UpdateCurrentEvent(VPEventType newEventStatus)
+    {
+        currentEvent = newEventStatus;
+    }
+
+    public void HammerBegin()
+    {
+        UpdateCurrentEvent(VPEventType.Hammer);
+    }
+
+    public void HammerEnd()
+    {
+        UpdateCurrentEvent(VPEventType.Nothing);
     }
 }

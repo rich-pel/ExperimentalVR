@@ -3,5 +3,6 @@
         Gavel,
         Bottle,
         Brush,
-        Nothing
+        Nothing,
+        Hammer
     }
