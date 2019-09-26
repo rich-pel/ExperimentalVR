@@ -68,8 +68,8 @@ public static class HeartBPMDetector
     {
         if (LastValues.Count < BUFFER_SIZE_MIN) return;
 
-        Stopwatch w = new Stopwatch();
-        w.Start();
+        //Stopwatch w = new Stopwatch();
+        //w.Start();
 
         ushort beats = 0;
         ECKVal[] values = LastValues.ToArray();
@@ -110,7 +110,7 @@ public static class HeartBPMDetector
         double timespan = (last.Timestamp - first.Timestamp);
         BeatsPerMinute = (ushort)Mathf.RoundToInt((float)((beats / timespan) * 60));
 
-        w.Stop();
-        Debug.Log("Calculated BPM: " + BeatsPerMinute + " with " + values.Length + " samples in " + w.ElapsedTicks + " Ticks");
+        //w.Stop();
+        //Debug.Log("Calculated BPM: " + BeatsPerMinute + " with " + values.Length + " samples in " + w.ElapsedTicks + " Ticks");
     }
 }
