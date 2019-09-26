@@ -763,6 +763,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &533587663 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 494198, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1527727077}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &550104426
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c8d28920c6fd784ca2d84e992f30a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  participant: {fileID: 0}
+  VRRoot: {fileID: 0}
+  VRHead: {fileID: 0}
   resetKey: 0
   hammerAnimator: {fileID: 0}
   itsHammerTime:
@@ -2180,6 +2187,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cd56a6baf516b47822d8e39a9b991d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1234849496 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1527727077}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1244840804
 GameObject:
   m_ObjectHideFlags: 0
@@ -3498,6 +3511,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2039520853}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &2115410190 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 429506, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1527727077}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1885392778859744230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3536,41 +3555,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.3287642
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.10598111
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.39544106
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
-        type: 3}
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
@@ -3589,6 +3573,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7715117720638896050, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.887
+      objectReference: {fileID: 0}
     - target: {fileID: 7715117720638896053, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
         type: 3}
       propertyPath: participant
@@ -3599,5 +3588,20 @@ PrefabInstance:
       propertyPath: hammerAnimator
       value: 
       objectReference: {fileID: 1812025018}
+    - target: {fileID: 7715117720638896053, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
+        type: 3}
+      propertyPath: VRRoot
+      value: 
+      objectReference: {fileID: 533587663}
+    - target: {fileID: 7715117720638896053, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
+        type: 3}
+      propertyPath: VRHead
+      value: 
+      objectReference: {fileID: 2115410190}
+    - target: {fileID: 7715117720638896053, guid: 109e3fe3cbcf14242a7bca5d50d6dd01,
+        type: 3}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 1234849496}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 109e3fe3cbcf14242a7bca5d50d6dd01, type: 3}

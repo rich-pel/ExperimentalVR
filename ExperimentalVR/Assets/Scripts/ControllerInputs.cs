@@ -23,9 +23,9 @@ public class ControllerInputs : MonoBehaviour
     #endregion
 
 
-    
+    [SerializeField] private Transform VRRoot;
+    [SerializeField] private Transform VRHead;
 
-    [SerializeField] private ParticipantController participant;
     [SerializeField] private KeyCode resetKey;
 
     [SerializeField] private Animator hammerAnimator;
@@ -110,7 +110,7 @@ public class ControllerInputs : MonoBehaviour
 
     private void ResetPosition()
     {
-        participant.ResetPosition();
+        VRRoot.position = transform.position - (VRHead.position - VRRoot.position);
     }
 
 }
