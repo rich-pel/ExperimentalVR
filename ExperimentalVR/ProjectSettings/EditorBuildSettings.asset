@@ -15,6 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/ExperimentScene.unity
     guid: 3d35f8646f4be8e49944dda29ce40f32
   - enabled: 1
-    path: Assets/Scenes/Evaluation.unity
+    path: Assets/Scenes/EvaluationScene.unity
     guid: 71f46b9046d18c243aeb317b750c455d
   m_configObjects: {}
