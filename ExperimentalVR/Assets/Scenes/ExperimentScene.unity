@@ -1684,6 +1684,9 @@ MonoBehaviour:
   itsHammerTime:
     actionPath: /actions/default/in/InteractUI
     needsReinit: 0
+  itsRestTime:
+    actionPath: /actions/default/in/GrabGrip
+    needsReinit: 0
   InputSource: 0
   participant: {fileID: 3858844226877974895}
 --- !u!4 &1919079992
