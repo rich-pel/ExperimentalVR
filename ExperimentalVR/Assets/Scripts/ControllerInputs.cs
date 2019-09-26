@@ -23,8 +23,12 @@ public class ControllerInputs : MonoBehaviour
     #endregion
 
 
+    
+
     [SerializeField] private ParticipantController participant;
     [SerializeField] private KeyCode resetKey;
+
+    [SerializeField] private Animator hammerAnimator;
 
     // a reference to the action
     public SteamVR_Action_Boolean itsHammerTime;
@@ -85,9 +89,24 @@ public class ControllerInputs : MonoBehaviour
     public void TriggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         Debug.Log("Trigger is down");
+     
         // start Animation
+        StartCoroutine(HammerInAction());
+        
     }
 
+    private IEnumerator HammerInAction()
+    {
+        ExperimentalManager.instance.HammerBegin();
+        //hammerAnimator.
+        hammerAnimator.SetTrigger("starthammer");
+
+        // hammerAnimator.Play("hammerRig|hammerVisual_001", -1);
+        // Debug.LogFormat("Tada: {0}", hammerAnimator.);
+        yield return new WaitForSeconds(hammerAnimator.playbackTime);
+        ExperimentalManager.instance.HammerEnd();
+        // Debug.LogFormat("Tada: {0}", hammerAnimator.playbackTime);
+    }
 
     private void ResetPosition()
     {

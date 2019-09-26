@@ -502,6 +502,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   participant: {fileID: 0}
   resetKey: 0
+  hammerAnimator: {fileID: 0}
   itsHammerTime:
     actionPath: 
     needsReinit: 0
@@ -2197,6 +2198,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1742651507}
   m_CullTransparentMesh: 0
+--- !u!95 &1812025018 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6972117111938494965, guid: f789da9d081834a468d1376ee1b9a07b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1885392778859744230}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1816909369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2257,6 +2264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   participant: {fileID: 1211424386}
   resetKey: 32
+  hammerAnimator: {fileID: 1812025018}
   itsHammerTime:
     actionPath: /actions/default/in/InteractUI
     needsReinit: 0
@@ -2648,7 +2656,7 @@ PrefabInstance:
     - target: {fileID: 1030176782681152655, guid: f789da9d081834a468d1376ee1b9a07b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.051
       objectReference: {fileID: 0}
     - target: {fileID: 1030176782681152655, guid: f789da9d081834a468d1376ee1b9a07b,
         type: 3}
