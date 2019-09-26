@@ -1,7 +1,5 @@
 {
-   "action_manifest_version" : 0,
-   "alias_info" : {},
-   "app_key" : "application.generated.unity.experimentalvr.exe",
+   "app_key" : "application.generated.unity.steamvr.exe",
    "bindings" : {
       "/actions/buggy" : {
          "sources" : [
@@ -252,10 +250,7 @@
          ]
       }
    },
-   "category" : "steamvr_input",
    "controller_type" : "vive_controller",
    "description" : "",
-   "name" : "My ExperimentalVR [Testing] configuration for Vive Controller",
-   "options" : {},
-   "simulated_actions" : []
+   "name" : "vive_controller"
 }
