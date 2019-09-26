@@ -5,7 +5,7 @@
 		_ColorGraph ("Graph Color", Color) = (1,1,1,1)
 		_ColorBack ("Background Color", Color) = (0,0,0,0.5)
 		_GraphThickness ("Graph Thickness", Range(0.001, 1.0)) = 0.1
-		_Range ("Range", Range(1, 1024)) = 1024 // must macth MAX_BUFFER_SIZE !!!
+		_Range ("Range", Range(1, 1000)) = 1000 // must macth MAX_BUFFER_SIZE !!!
     }
     SubShader
     {
@@ -17,7 +17,7 @@
             #pragma vertex vert
             #pragma fragment frag
 
-			#define MAX_BUFFER_SIZE 1024
+			#define MAX_BUFFER_SIZE 1000
 
             #include "UnityCG.cginc"
 

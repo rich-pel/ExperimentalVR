@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 [RequireComponent(typeof(Image))]
 public class ShaderPlotter : MonoBehaviour
 {
-    const int MAX_BUFFER_SIZE = 1024;   // must be same as in shader!
+    const int MAX_BUFFER_SIZE = 1000;   // must be same as in shader!
 
     public enum EPlotSource
     {
