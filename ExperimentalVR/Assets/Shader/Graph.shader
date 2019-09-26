@@ -5,6 +5,7 @@
 		_ColorGraph ("Graph Color", Color) = (1,1,1,1)
 		_ColorBack ("Background Color", Color) = (0,0,0,0.5)
 		_GraphThickness ("Graph Thickness", Range(0.001, 1.0)) = 0.1
+		_Range ("Range", Range(1, 1024)) = 1024 // must macth MAX_BUFFER_SIZE !!!
     }
     SubShader
     {
@@ -45,7 +46,7 @@
 			float _GraphThickness;
 
 			float _ValueBuffer[MAX_BUFFER_SIZE];
-			int _ValueBufferSize = MAX_BUFFER_SIZE;
+			int _Range;
 
             fixed4 frag (v2f f) : SV_Target
             {
@@ -54,15 +55,15 @@
 				//	buffer[i] = (float)i / (float)(BUFFER_SIZE-1);
 				//}
 
-				float space = 1.0 / (_ValueBufferSize -1);	// space between two values
-				int index = f.uv[0] * (_ValueBufferSize -1);	// current index, depending on x positon
+				float space = 1.0 / (_Range -1);	// space between two values
+				int index = f.uv[0] * (_Range -1);	// current index, depending on x positon
 
 				float pos = f.uv[0] - (index * space);	// position relative to our index
 				float inter = lerp(_ValueBuffer[index], _ValueBuffer[index + 1], (pos / space));	// lerp between this and next value, depending on our relative position
 				float val = abs(f.uv[1] - inter);		// determine whether we are close to our interpolated value (y position)
 
 				// draw in respect to line thickness
-				return lerp(_ColorGraph, _ColorBack, smoothstep(0.0, _GraphThickness/100, val));
+				return lerp(_ColorGraph, _ColorBack, smoothstep(0.0, _GraphThickness/10, val));
             }
             ENDCG
         }
