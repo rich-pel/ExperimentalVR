@@ -50,6 +50,6 @@ MonoBehaviour:
     actionPath: /actions/default/in/InteractUI
     needsReinit: 0
   itsRestTime:
-    actionPath: 
-    needsReinit: 1
+    actionPath: /actions/default/in/GrabGrip
+    needsReinit: 0
   InputSource: 0
