@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
 
+using Debug = UnityEngine.Debug;
+
 [RequireComponent(typeof(Image))]
 public class Plotter : MonoBehaviour
 {
@@ -125,7 +127,7 @@ public class Plotter : MonoBehaviour
 
     int GetIndexFromPosition(int x, int y)
     {
-        return y * WIDTH + x;
+        return Mathf.Clamp(y * WIDTH + x, 0, Pixels.Length - 1);
     }
 
     // Update is called once per frame
@@ -162,9 +164,10 @@ public class Plotter : MonoBehaviour
         {
             pixelLag = i * Zoom;
             nextValue = GetNextValue();
-            nextX = WIDTH - (i - 1) * Zoom;
-            int nextY = (int)((nextValue / 1024f) * HEIGHT);
-            DrawLineThick(WIDTH - pixelLag - 1, lastY, nextX, nextY, LineThickness);
+            nextX = Mathf.Clamp((WIDTH - (i - 1)) * Zoom, 0, WIDTH - 1);
+            int nextY = Mathf.Clamp((int)((nextValue / 1024f) * HEIGHT), 0, HEIGHT - 1);
+            int currX = Mathf.Clamp(WIDTH - pixelLag - 1, 0, WIDTH - 1);
+            DrawLineThick(currX, lastY, nextX, nextY, LineThickness);
             lastY = nextY;
         }
 
