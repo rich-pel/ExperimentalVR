@@ -1,5 +1,6 @@
 # ExperimentalVR
 VR Experiment with an EMG
 
-
-![DEMO VIDEO](Demo2.gif)
+<p align="center">
+  <img src="Demo2.gif" width="1000" title="Demo">
+</p>
